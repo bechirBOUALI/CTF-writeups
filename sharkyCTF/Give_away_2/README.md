@@ -7,7 +7,7 @@ This writeup is about PWN challenge
 
 	* libc-2.27.so: shared library (given)
 	* give_away_2: challenge binary (given)
-	* ropy_exploit.py: complete exploit
+	* ropy_exploit.py: Full exploit
 
 ![description](./screenshots/give_away_2.png)
 
@@ -25,7 +25,7 @@ Quick check of the binary on ida gives
 ![vuln](./screenshots/ida_vuln.png)
 
 
-checksec reveal that pie is enabled which explain the purpose of leaking the address of main. So we can compute the base of the progrma later
+checksec reveal that PIE is enabled which explain the purpose of leaking the address of main. So we can compute the base of the progrma later
 
 ![checksec](./screenshots/checksec.png)
 
@@ -79,9 +79,11 @@ final_rop = padding + p64(RET) + p64(POP_RDI) + p64(BINSH) + p64(RET) + p64(SYST
 p.sendline(final_rop)
 ```
 
---> Find the full exploit in `ropy_exploit.py`
 
-**Notes**
+## Notes
+
+* Find the full exploit in `ropy_exploit.py`
+* Flag: shkCTF{It's_time_to_get_down_to_business}
 
 * The length of the payload had to be multiple of 16 because the stack should be 16-byes aligned that's why we add RET in the rop chain. Otherwise you'll stuck in the movaps segfault problem (it was my case :') )
 

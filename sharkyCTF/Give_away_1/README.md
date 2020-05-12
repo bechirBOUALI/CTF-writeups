@@ -12,11 +12,11 @@ This writeup is about PWN challenge
 
 1. Quick check of the binary on ida gives
 
-	* main
+* main
 
 ![main](./screenshots/ida_main.png)
 
-	* vuln 
+* vuln 
 
 ![vuln](./screenshots/ida_vuln.png)
 
@@ -31,14 +31,14 @@ This kinda of classic exploits so
 
 1. Step I: 
 
-* extraire system and /bin/sh offset from libc binary
+* Extract system and /bin/sh offset from libc binary
 
 ```shell
 readelf -s  libc-2.27.so | grep system
 strings -a -t x libc-2.27.so | grep /bin/sh
 ```
 
-* compute libc base address 
+* Compute libc base address 
 
 ```python
 out = p.recvline().strip().split(' ')
@@ -48,7 +48,7 @@ libc_base = sysaddr - SYSTEM
 
 2. Step II:
 
-The arguments for system should be passed in the stack because `__cdecl` is  the calling convention of libc functions.
+The argument for system ("/bin/sh") should be passed in the stack because `__cdecl` is  the calling convention of libc functions.
 
 ![libc_caling_convention](./screenshots/ida_libc_system.png)
 
@@ -59,6 +59,6 @@ p.sendline(payload)
 
 Basically we add a dummy 4 bytes("B" * 4) to the payload to avoid stack aligment issues as the stack should be 16-bytes aligned.
 
-## Notes:
-* The Full exploit is in exploit.py.
+## Notes
+* The Full exploit is in exploit.py
 * Flag: shkCTF{I_h0PE_U_Fl4g3d_tHat_1n_L3ss_Th4n_4_m1nuT3s}

